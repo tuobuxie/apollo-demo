@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <springProperty scope="context" name="springAppName"
+                    source="spring.application.name" />
+
+    <springProperty scope="context" name="logPath"
+                    source="logPath" defaultValue="../logs/"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="[%date{yyyy-MM-dd HH:mm:ss.SSS}] [%X{X-B3-TraceId:-}] [%X{X-B3-ParentSpanId:-}] [%X{X-B3-SpanId:-}] [%thread] [%-5level] [%logger{36}] [%M] [%line] => %msg%n"/>
+    <!--历史日志文件个数限制，配置0为不限制数量-->
+    <property name="logMaxHistory" value="2232"/>
+
+    <!--生产环境去掉控制台输出-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}${springAppName}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logPath}${springAppName}.%d{yyyy-MM-dd-HH}-%i.log</FileNamePattern>
+            <maxHistory>${logMaxHistory}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="dailyRollingFileAppender"/>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </root>
+
+</configuration>
