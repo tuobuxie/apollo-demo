@@ -27,13 +27,10 @@ public class ApolloRefreshConfig implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    @ApolloConfigChangeListener(value = {"application","FRAMEWORK.application"})
+    @ApolloConfigChangeListener(value = {"application","FRAMEWORK.springboot2-tomcat","FRAMEWORK.springboot2-log"})
     private void configChangeListener(ConfigChangeEvent changeEvent) {
         this.applicationContext.publishEvent(new EnvironmentChangeEvent(changeEvent.changedKeys()));
         refreshScope.refreshAll();
     }
-
-
-
 
 }
