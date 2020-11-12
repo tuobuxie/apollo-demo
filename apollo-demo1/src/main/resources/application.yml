@@ -1,0 +1,11 @@
+apollo:
+    bootstrap:
+        eagerLoad:
+            enabled: true
+        enabled: true
+        namespaces: application.yml,FRAMEWORK.springboot2-tomcat,FRAMEWORK.springboot2-redis,FRAMEWORK.springboot2-rocketmq,FRAMEWORK.springboot2-log,FRAMEWORK.springboot2-sleuth,FRAMEWORK.springboot2-management
+    #apollo的地址    JVM   -Dapollo.meta=http://172.20.35.50:8080  环境变量 APOLLO_META
+    meta: http://172.20.35.50:8080
+app:
+    #对应apollo里面创建的项目名  jvm -Dapp.id 环境变量 APP_ID
+    id: test.apollo-demo1
